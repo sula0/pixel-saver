@@ -96,7 +96,7 @@ function createButtons() {
 		}
 		
 		if (boxes[1].get_children().length) {
-			Main.panel._rightBox.insert_child_at_index(actors[1], Main.panel._rightBox.get_children().length - 1);
+			Main.panel._leftBox.insert_child_at_index(actors[1], Main.panel._leftBox.get_children().length - 1);
 		}
 		
 		updateVisibility();

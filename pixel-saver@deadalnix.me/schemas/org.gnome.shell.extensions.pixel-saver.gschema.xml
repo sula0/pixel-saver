@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.pixel-saver" path="/org/gnome/shell/extensions/pixel-saver/">
+        <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
+        <key type="s" name="button-panel-position">
+            <default>'right'</default>
+            <summary>Buttons position on the top panel</summary>
+            <description>Position of buttons on the top panel ('left', 'center', 'right')</description>
+        </key>
+    </schema>
+</schemalist>

@@ -10,6 +10,21 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Util = Me.imports.util;
 
+/*
+	Setting options for button alignment.
+ */
+let buttonPanelPosition = '';
+const panels = {
+	'left': Main.panel._leftBox,
+	'center': Main.panel._centerBox,
+	'right': Main.panel._rightBox
+};
+
+function onSettingsChanged() {
+	buttonPanelPosition = settings.get_string('button-panel-position');
+	createButtons();
+}
+
 function LOG(message) {
 	// log("[pixel-saver]: " + message);
 }
@@ -92,13 +107,14 @@ function createButtons() {
 	Mainloop.idle_add(function () {
 		// 1 for activity button and -1 for the menu
 		if (boxes[0].get_children().length) {
-			Main.panel._leftBox.insert_child_at_index(actors[0], 1);
+			panels[buttonPanelPosition].insert_child_at_index(actors[0], 1);
 		}
-		
+
 		if (boxes[1].get_children().length) {
-			Main.panel._rightBox.insert_child_at_index(actors[1], Main.panel._rightBox.get_children().length - 1);
+			const panel = panels[buttonPanelPosition];
+			panel.insert_child_at_index(actors[1], panel.get_children().length - 1);
 		}
-		
+
 		updateVisibility();
 		return false;
 	});
@@ -254,8 +270,16 @@ let wmCallbackIDs = [];
 let overviewCallbackIDs = [];
 let themeCallbackID = 0;
 
+let settings = {};
+
 function enable() {
 	loadTheme();
+
+	settings = ExtensionUtils.getSettings(
+		'org.gnome.shell.extensions.pixel-saver');
+	buttonPanelPosition = settings.get_string('button-panel-position');
+	settings.connect('changed::button-panel-position', onSettingsChanged);
+
 	createButtons();
 	
 	overviewCallbackIDs.push(Main.overview.connect('showing', updateVisibility));
@@ -268,7 +292,6 @@ function enable() {
 	wmCallbackIDs.push(wm.connect('unminimize', updateVisibility));
 	
 	wmCallbackIDs = wmCallbackIDs.concat(Util.onSizeChange(updateVisibility));
-	
 
     if (gtk_settings) {
         themeCallbackID = gtk_settings.connect('notify::gtk-theme-name', loadTheme);
